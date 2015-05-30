@@ -50,7 +50,7 @@ function loadAddIns()
 	end
 	
 	for mod in lfs.dir("scripts/addins/") do
-	   if mod ~= "." and mod ~= ".." and mod:find(".lua") ~=nil  then
+	   if mod ~= "." and mod ~= ".." and mod:find("%.lua") ~=nil  then
 			print("load Addin "..mod)
 			modName = string.gsub(mod,".lua","")
 			local mod = require(modName)
@@ -81,7 +81,7 @@ function loadLibs()
 	end
 	
 	for mod in lfs.dir("scripts/libs/") do
-	   if mod ~= "." and mod ~= ".." and mod:find(".lua") ~=nil  then
+	   if mod ~= "." and mod ~= ".." and mod:find("%.lua") ~=nil  then
 			modName = string.gsub(mod,".lua","")
 			print("load "..modName)
 			
