@@ -19,9 +19,9 @@ function GUI.addButton(name, func,args, xmin, xmax, ymin, ymax)
 	GUI.buttonCount = GUI.buttonCount+1
 end
 function GUI.unload()
-end
+end       
 function GUI.init()
-
+       
 	GUI.loaded = true
 end
 function GUI.tick()
