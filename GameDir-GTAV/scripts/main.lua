@@ -12,21 +12,26 @@ Scripts_Init = {
 						if Enabled then
 							Scripts_Stop.Function()
 						end
-						for script in lfs.dir(Scripts_Path) do
-							if string.endsWith(script, ".lua") then
-								script = require(string.gsub(script, ".lua", ""))
-								if type(script)=="table" then
-									Scripts_Stop[#Scripts_Stop+1]=script.stop
-									Scripts_Init[#Scripts_Init+1]=script.init
-									Scripts_Loop[#Scripts_Loop+1]=script.loop
-									--[[if script.loop then
-										Scripts_Loop[#Scripts_Loop+1]=coroutine.wrap(script.loop)
-									end]]
-									--Compatability with older/existing LuaPlugin format Scripts
-									Scripts_Stop[#Scripts_Stop+1]=script.unload
-									Scripts_Loop[#Scripts_Loop+1]=script.tick
+						print("All Lua Scripts Loaded Without Error:", pcall(function()
+							for script in lfs.dir(Scripts_Path) do
+								if string.endsWith(script, ".lua") then
+									script = require(string.gsub(script, ".lua", ""))
+									if type(script)=="table" then
+										Scripts_Stop[#Scripts_Stop+1]=script.stop
+										Scripts_Init[#Scripts_Init+1]=script.init
+										Scripts_Loop[#Scripts_Loop+1]=script.loop
+										--[[if script.loop then
+											Scripts_Loop[#Scripts_Loop+1]=coroutine.wrap(script.loop)
+										end]]
+										--Compatability with older/existing LuaPlugin format Scripts
+										Scripts_Stop[#Scripts_Stop+1]=script.unload
+										Scripts_Loop[#Scripts_Loop+1]=script.tick
+									end
 								end
 							end
+						end))
+						for i=1, #Scripts_Init do
+							Scripts_Init[i]()
 						end
 						Enabled = true
 					end
@@ -217,7 +222,7 @@ local function _init()
 	Scripts_Init.Function()
 end
 function init()
-	while not IsKeyPressed--[[IsControlPressed]] do
+	while not IsKeyPressed or not IsControlPressed do
 		_init()
 		wait(5000)
 	end
