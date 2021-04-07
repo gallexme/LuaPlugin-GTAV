@@ -219,6 +219,9 @@ local function _init()
 	end]]
 	Wait=wait
 	
+	--Compatability with original LuaPlugin GUI.lua script
+	Keys = require("Keys")
+	
 	Scripts_Init.Function()
 end
 function init()
