@@ -186,6 +186,7 @@ local function _init()
 	Scripts_Init.Function()
 end
 function init()
+	local _init = _init
 	while IsKeyPressed==nil or IsControlPressed==nil or (GetHashKey==nil or _G.GetHashKey==nil) do
 		_init()
 	end
