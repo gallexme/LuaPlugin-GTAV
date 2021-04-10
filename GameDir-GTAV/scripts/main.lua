@@ -43,7 +43,8 @@ Scripts_Stop = {
 						
 						for script in lfs.dir(Scripts_Path) do
 							if string.endsWith(script, ".lua") then
-								package.loaded[string.gsub(script, ".lua", "")]=nil
+								--package.loaded[string.gsub(script, ".lua", "")]=nil
+								unrequire(string.gsub(script, ".lua", ""))
 							end
 						end
 						
@@ -86,18 +87,19 @@ local function _init()
 	package.path = string.format(".\\?.lua;%s?.lua;%slibs\\?.lua;%slibs\\?\\init.lua;%s", Scripts_Path, Scripts_Path, Scripts_Path, package.path) -- Lua
 	package.path = string.format(".\\?;%s?;%slibs\\?;%slibs\\?\\init;%s", Scripts_Path, Scripts_Path, Scripts_Path, package.path) -- NoExtension
 	
-	function unrequire(script)
+	--[[ Introduce some new useful functions ]]
+	function unrequire(script) -- Very useful for script resets/reloads/cleanup
 		package.loaded[script]=nil
 	end
 	
-	function string.split(inputstr,sep)
+	function string.split(inputstr,sep) -- Split strings into chunks or arguments (in tables)
 		sep = sep or "%s"
 		local t={}
 		for str in string.gmatch(inputstr, "([^"..sep.."]+)") do
 			table.insert(t, str)
 		end
 	return t end
-	function string.upperFirst(s)
+	function string.upperFirst(s) -- Make the first letter of a string uppercase
 		return s:sub(1,1):upper()..s:sub(2)
 	end
 	function string.endsWith(str, ending)
