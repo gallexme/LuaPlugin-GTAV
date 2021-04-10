@@ -81,53 +81,10 @@ else
 	end
 end
 local function _init()
-	-- Update the search path
-	--[[package.path = string.format("%s?.lua;%s", Scripts_Path, package.path)
-	package.path = string.format("%s?.lua;%s", Scripts_Path.."libs\\", package.path)]]
-	--package.path = string.format(".\\?.lua;%s?.lua;%slibs\\?.lua;", Scripts_Path, Scripts_Path)
-	--package.path = string.format(".\\?.lua;%s?.lua;%slibs\\?.lua;%s", Scripts_Path, Scripts_Path, package.path)
-	package.path = string.format(".\\?.dll;%s?.dll;%slibs\\?.dll;%slibs\\?\\init.dll;%s", Scripts_Path, Scripts_Path, Scripts_Path, package.path)
-	package.path = string.format(".\\?.lua;%s?.lua;%slibs\\?.lua;%slibs\\?\\init.lua;%s", Scripts_Path, Scripts_Path, Scripts_Path, package.path)
-	package.path = string.format(".\\?;%s?;%slibs\\?;%slibs\\?\\init;%s", Scripts_Path, Scripts_Path, Scripts_Path, package.path)
-	
-	--local inspect = require('inspect')
-	
-	--[[
-	local luvi = require('luvi')
-	print(inspect(luvi))
-	local bundle = require('luvi').bundle
-	print(inspect(bundle))
-	load(bundle.readfile("luvit-loader.lua"), "bundle:luvit-loader.lua")()
-	]]
-	
-	--[[local luviFile = io.open(Scripts_Path.."libs\\luvi.exe")
-	print(inspect(luviFile))
-	local luviData = luviFile:read("*a")
-	print(inspect(luviData))
-	local luvi = load(luviData)
-	print(inspect(luvi))]]
-	
-	--require("libuv")
-	--require("luvit-loader")
-	--dofile(Scripts_Path.."\\libs\\luvit-loader.lua")
-	--os.execute("")
-	--load(io.open(Scripts_Path.."libs\\luvi.exe"):read("*a"))
-	--require('luvi')
-	--loadlib(Scripts_Path.."libs\\luvi.exe", "luvi")()
-	--dofile(Scripts_Path.."libs\\luvi.exe")
-	--[[load(io.open(Scripts_Path.."libs\\luvi.exe"):read("*a"))
-	local inspect = require'inspect'
-	print(inspect(_G))
-	local uv = require('uv')
-	Wait = function(ms)
-		local thread = coroutine.running()
-		local timer = uv.new_timer()
-		timer:start(ms, 0, function()
-			timer:close()
-			coroutine.resume(thread)
-		end)
-		coroutine.yield()
-	end]]
+	--[[ Update the search path]]
+	package.path = string.format(".\\?.dll;%s?.dll;%slibs\\?.dll;%slibs\\?\\init.dll;%s", Scripts_Path, Scripts_Path, Scripts_Path, package.path) -- DLL
+	package.path = string.format(".\\?.lua;%s?.lua;%slibs\\?.lua;%slibs\\?\\init.lua;%s", Scripts_Path, Scripts_Path, Scripts_Path, package.path) -- Lua
+	package.path = string.format(".\\?;%s?;%slibs\\?;%slibs\\?\\init;%s", Scripts_Path, Scripts_Path, Scripts_Path, package.path) -- NoExtension
 	
 	function unrequire(script)
 		package.loaded[script]=nil
@@ -208,15 +165,9 @@ local function _init()
 				
 				_G[FunctionName] = v
 			end
-			--[[if not DebugMode then
-				_G[k] = nil
-			end]]
 		end
 	end
 	IsKeyPressed=get_key_pressed
-	--[[if not DebugMode then
-		--get_key_pressed=nil
-	end]]
 	Wait=wait
 	
 	--Compatability with original LuaPlugin GUI.lua script
