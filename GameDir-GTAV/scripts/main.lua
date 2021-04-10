@@ -7,8 +7,8 @@ Scripts_Path	= "C:\\Path\\To\\ScriptsDir-Lua\\"
 --[[ Script/Code Area ]]
 local Scripts_Init, Scripts_Loop, Scripts_Stop
 local Enabled = false
-local print, pcall, lfs_dir, collectgarbage
-	= print, pcall, lfs.dir, collectgarbage
+local print, pcall, lfs_dir, require, collectgarbage
+	= print, pcall, lfs.dir, require, collectgarbage
 Scripts_Init = {
 	Function	=	function()
 						if Enabled then
@@ -86,20 +86,23 @@ else
 end
 local function _init()
 	--[[ Update the search path]]
-	package.path = string.format(".\\?.dll;%s?.dll;%slibs\\?.dll;%slibs\\?\\init.dll;%s", Scripts_Path, Scripts_Path, Scripts_Path, package.path) -- DLL
-	package.path = string.format(".\\?.lua;%s?.lua;%slibs\\?.lua;%slibs\\?\\init.lua;%s", Scripts_Path, Scripts_Path, Scripts_Path, package.path) -- Lua
-	package.path = string.format(".\\?;%s?;%slibs\\?;%slibs\\?\\init;%s", Scripts_Path, Scripts_Path, Scripts_Path, package.path) -- NoExtension
+	local string_format
+		= string.format
+	package.path = string_format(".\\?.dll;%s?.dll;%slibs\\?.dll;%slibs\\?\\init.dll;%s", Scripts_Path, Scripts_Path, Scripts_Path, package.path) -- DLL
+	package.path = string_format(".\\?.lua;%s?.lua;%slibs\\?.lua;%slibs\\?\\init.lua;%s", Scripts_Path, Scripts_Path, Scripts_Path, package.path) -- Lua
+	package.path = string_format(".\\?;%s?;%slibs\\?;%slibs\\?\\init;%s", Scripts_Path, Scripts_Path, Scripts_Path, package.path) -- NoExtension
 	
 	--[[ Introduce some new useful functions ]]
 	function unrequire(script) -- Very useful for script resets/reloads/cleanup
 		package.loaded[script]=nil
 	end
 	
+	local string_gmatch
+		= string.gmatch
 	function string.split(inputstr,sep) -- Split strings into chunks or arguments (in tables)
-		sep = sep or "%s"
-		local t={}
-		for str in string.gmatch(inputstr, "([^"..sep.."]+)") do
-			table.insert(t, str)
+		sep = sep or "%s" local t,n={},0
+		for str in string_gmatch(inputstr, "([^"..sep.."]+)") do
+			n=n+1 t[n]=str
 		end
 	return t end
 	function string.upperFirst(s) -- Make the first letter of a string uppercase
@@ -153,14 +156,16 @@ local function _init()
 		UNK2			= true,
 		UNK3			= true,
 	}
+	local pairs, string_split, string_upperFirst, string_lower
+		= pairs, string.split, string.upperFirst, string.lower
 	for k,v in pairs(_G) do
 		if Namespaces[k] then
 			local FunctionName
 			for k,v in pairs(_G[k]) do
-				k = string.split(k, "_")
+				k = string_split(k, "_")
 				
 				for i=1, #k do
-					k[i] = string.upperFirst(string.lower(k[i]))
+					k[i] = string_upperFirst(string_lower(k[i]))
 				end
 				
 				FunctionName = ""
