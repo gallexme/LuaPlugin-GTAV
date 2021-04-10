@@ -24,10 +24,7 @@ Scripts_Init = {
 										Scripts_Stop[#Scripts_Stop+1]=script.stop
 										Scripts_Init[#Scripts_Init+1]=script.init
 										Scripts_Loop[#Scripts_Loop+1]=script.loop
-										--[[if script.loop then
-											Scripts_Loop[#Scripts_Loop+1]=coroutine.wrap(script.loop)
-										end]]
-										--Compatability with older/existing LuaPlugin format Scripts
+										--Support older/existing LuaPlugin format scripts
 										Scripts_Stop[#Scripts_Stop+1]=script.unload
 										Scripts_Loop[#Scripts_Loop+1]=script.tick
 									end
