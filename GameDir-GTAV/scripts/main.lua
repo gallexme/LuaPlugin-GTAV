@@ -7,15 +7,19 @@ Scripts_Path	= "C:\\Path\\To\\ScriptsDir-Lua\\"
 --[[ Script/Code Area ]]
 local Scripts_Init, Scripts_Loop, Scripts_Stop
 local Enabled = false
+local print, pcall
+	= print, pcall
 Scripts_Init = {
 	Function	=	function()
 						if Enabled then
 							Scripts_Stop.Function()
 						end
 						print("All Lua Scripts Loaded Without Error:", pcall(function()
-							for script in lfs.dir(Scripts_Path) do
-								if string.endsWith(script, ".lua") then
-									script = require(string.gsub(script, ".lua", ""))
+							local lfs_dir, string_endsWith, require, string_gsub, type
+								= lfs.dir, string.endsWith, require, string.gsub, type
+							for script in lfs_dir(Scripts_Path) do
+								if string_endsWith(script, ".lua") then
+									script = require(string_gsub(script, ".lua", ""))
 									if type(script)=="table" then
 										Scripts_Stop[#Scripts_Stop+1]=script.stop
 										Scripts_Init[#Scripts_Init+1]=script.init
