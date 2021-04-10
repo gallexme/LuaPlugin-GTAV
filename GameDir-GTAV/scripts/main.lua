@@ -7,8 +7,8 @@ Scripts_Path	= "C:\\Path\\To\\ScriptsDir-Lua\\"
 --[[ Script/Code Area ]]
 local Scripts_Init, Scripts_Loop, Scripts_Stop
 local Enabled = false
-local print, pcall, lfs_dir
-	= print, pcall, lfs.dir
+local print, pcall, lfs_dir, collectgarbage
+	= print, pcall, lfs.dir, collectgarbage
 Scripts_Init = {
 	Function	=	function()
 						if Enabled then
@@ -42,10 +42,12 @@ Scripts_Stop = {
 	Function	=	function()
 						Enabled = false
 						
-						for script in lfs.dir(Scripts_Path) do
-							if string.endsWith(script, ".lua") then
+						local string_endsWith, unrequire, string_gsub
+							= string.endsWith, unrequire, string.gsub
+						for script in lfs_dir(Scripts_Path) do
+							if string_endsWith(script, ".lua") then
 								--package.loaded[string.gsub(script, ".lua", "")]=nil
-								unrequire(string.gsub(script, ".lua", ""))
+								unrequire(string_gsub(script, ".lua", ""))
 							end
 						end
 						
