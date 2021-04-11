@@ -6,7 +6,7 @@ Scripts_Path	= "C:\\Path\\To\\ScriptsDir-Lua\\"
 
 --[[ Script/Code Area ]]
 local Scripts_Init, Scripts_Loop, Scripts_Stop
-local Enabled = false
+local initRan, Enabled = false, false
 local print, pcall, lfs_dir, require, collectgarbage
 	= print, pcall, lfs.dir, require, collectgarbage
 Scripts_Init = {
@@ -68,6 +68,7 @@ _G.Scripts_Init, _G.Scripts_Stop = Scripts_Init.Function, Scripts_Stop.Function
 
 if DebugMode then
 	tick = function()
+		if initRan ~= 2 then return end
 		local Scripts_Loop = Scripts_Loop
 		for i=1, #Scripts_Loop do
 			if not Enabled and i>1 then break end
@@ -76,7 +77,7 @@ if DebugMode then
 	end
 else
 	tick = function()
-		if Enabled then
+		if Enabled and initRan == 2 then
 			local Scripts_Loop = Scripts_Loop
 			for i=1, #Scripts_Loop do
 				Scripts_Loop[i]()
@@ -173,7 +174,9 @@ local function _init()
 					FunctionName = FunctionName..k[i]
 				end
 				
-				_G[FunctionName] = v
+				while _G[FunctionName]~=v do
+					_G[FunctionName] = v
+				end
 			end
 		end
 	end
@@ -186,8 +189,14 @@ local function _init()
 	Scripts_Init.Function()
 end
 function init()
-	local _init = _init
-	while IsKeyPressed==nil or IsControlPressed==nil or (GetHashKey==nil or _G.GetHashKey==nil) do
+	if initRan then return end initRan = 1
+	local wait, _init = wait, _init
+	wait(250)
+	--collectgarbage("stop")
+	--_G=setmetatable(_G,{__mode=nil, __gc=function()_G=_G;end})
+	while IsKeyPressed==nil or IsControlPressed==nil or (GetHashKey==nil or _G.GetHashKey==nil) or (HasModelLoaded==nil or _G.HasModelLoaded==nil) or (GetEntityCoords==nil or _G.GetEntityCoords==nil) do
 		_init()
 	end
+	wait(50)
+	initRan = 2
 end
