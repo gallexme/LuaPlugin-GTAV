@@ -46,7 +46,6 @@ Scripts_Stop = {
 							= string.endsWith, unrequire, string.gsub
 						for script in lfs_dir(Scripts_Path) do
 							if string_endsWith(script, ".lua") then
-								--package.loaded[string.gsub(script, ".lua", "")]=nil
 								unrequire(string_gsub(script, ".lua", ""))
 							end
 						end
