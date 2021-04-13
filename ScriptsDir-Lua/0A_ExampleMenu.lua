@@ -13,7 +13,7 @@ local Example Example = {
 							Example.Menu.addButton("Hello World3", Example.SaySomethingA, {}, 0.0, 0.2, 0.05, 0.05)
 							Example.Menu.addButton("Hello World4", Example.SaySomethingA, {"Hi", "World", "!"}, 0.0, 0.2, 0.05, 0.05)
 						end,
-	loop			=	function()
+	loop			=	function(Init)
 							if IsKeyPressed(Example.Keys.Z) or IsKeyPressed(90) or IsControlPressed(0, 20) then
 								Example.Menu.Open = not Example.Menu.Open
 							end

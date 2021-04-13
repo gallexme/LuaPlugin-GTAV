@@ -6,8 +6,7 @@ if DebugMode then
 							print('Reloading Scripts')
 							Scripts_Init()
 							wait(2499)
-							--Wait(2499)
 						end
 					end
 	}
-else return {} end
+end
