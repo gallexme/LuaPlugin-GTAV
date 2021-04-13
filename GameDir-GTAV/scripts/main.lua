@@ -66,33 +66,34 @@ Scripts_Stop = {
 }
 _G.Scripts_Init, _G.Scripts_Stop = Scripts_Init.Function, Scripts_Stop.Function
 
+local os_clock
+	= os.clock
+local GetTime = function()
+	return os_clock()*1000
+end
+local Time
 if DebugMode then
 	tick = function()
 		if initRan ~= 2 then return end
 		local Scripts_Loop = Scripts_Loop
+		Time = GetTime()
 		for i=1, #Scripts_Loop do
 			if not Enabled and i>1 then break end
-			Scripts_Loop[i]()
+			Scripts_Loop[i](Time)
 		end
 	end
 else
 	tick = function()
 		if Enabled and initRan == 2 then
 			local Scripts_Loop = Scripts_Loop
+			Time = GetTime()
 			for i=1, #Scripts_Loop do
-				Scripts_Loop[i]()
+				Scripts_Loop[i](Time)
 			end
 		end
 	end
 end
 local function _init()
-	--[[ Update the search path]]
-	local string_format
-		= string.format
-	package.path = string_format(".\\?.dll;%s?.dll;%slibs\\?.dll;%slibs\\?\\init.dll;%s", Scripts_Path, Scripts_Path, Scripts_Path, package.path) -- DLL
-	package.path = string_format(".\\?.lua;%s?.lua;%slibs\\?.lua;%slibs\\?\\init.lua;%s", Scripts_Path, Scripts_Path, Scripts_Path, package.path) -- Lua
-	package.path = string_format(".\\?;%s?;%slibs\\?;%slibs\\?\\init;%s", Scripts_Path, Scripts_Path, Scripts_Path, package.path) -- NoExtension
-	
 	--[[ Introduce some new useful functions ]]
 	function unrequire(script) -- Very useful for script resets/reloads/cleanup
 		package.loaded[script]=nil
@@ -100,19 +101,20 @@ local function _init()
 	
 	local string_gmatch
 		= string.gmatch
-	function string.split(inputstr,sep) -- Split strings into chunks or arguments (in tables)
+	local function string_split(inputstr,sep) -- Split strings into chunks or arguments (in tables)
 		sep = sep or "%s" local t,n={},0
 		for str in string_gmatch(inputstr, "([^"..sep.."]+)") do
 			n=n+1 t[n]=str
 		end
-	return t end
-	function string.upperFirst(s) -- Make the first letter of a string uppercase
+	return t end string.split = string_split
+	local function string_upperFirst(s) -- Make the first letter of a string uppercase
 		return s:sub(1,1):upper()..s:sub(2)
-	end
-	function string.endsWith(str, ending)
+	end string.upperFirst = string_upperFirst
+	local function string_endsWith(str, ending) -- Check if a string ends with something
 		return ending == "" or str:sub(-#ending) == ending
-	end
+	end string.endsWith = string_endsWith
 	
+	--[[ Introduce/Create FiveM style game native function calls ]]
 	local Namespaces	= {
 		PLAYER			= true,
 		ENTITY			= true,
@@ -157,8 +159,8 @@ local function _init()
 		UNK2			= true,
 		UNK3			= true,
 	}
-	local pairs, string_split, string_upperFirst, string_lower
-		= pairs, string.split, string.upperFirst, string.lower
+	local pairs, string_lower
+		= pairs, string.lower
 	for k,v in pairs(_G) do
 		if Namespaces[k] then
 			local FunctionName
@@ -183,17 +185,28 @@ local function _init()
 	IsKeyPressed=get_key_pressed
 	Wait=wait
 	
-	--Compatability with original LuaPlugin GUI.lua script
+	--[[ Fix Scripts_Path string variable if missing the trailing "//" on the end ]]
+	if not string_endsWith(Scripts_Path, "//") then
+		Scripts_Path = Scripts_Path.."//"
+	end
+	
+	--[[ Update the search path ]]
+	local string_format
+		= string.format
+	package.path = string_format(".\\?.dll;%s?.dll;%slibs\\?.dll;%slibs\\?\\init.dll;%s", Scripts_Path, Scripts_Path, Scripts_Path, package.path) -- DLL
+	package.path = string_format(".\\?.lua;%s?.lua;%slibs\\?.lua;%slibs\\?\\init.lua;%s", Scripts_Path, Scripts_Path, Scripts_Path, package.path) -- Lua
+	package.path = string_format(".\\?;%s?;%slibs\\?;%slibs\\?\\init;%s", Scripts_Path, Scripts_Path, Scripts_Path, package.path) -- NoExtension
+	
+	--[[ Compatability with original LuaPlugin GUI.lua script ]]
 	Keys = require("Keys")
 	
+	--[[ Perform scripts initialization ]]
 	Scripts_Init.Function()
 end
 function init()
 	if initRan then return end initRan = 1
 	local wait, _init = wait, _init
 	wait(250)
-	--collectgarbage("stop")
-	--_G=setmetatable(_G,{__mode=nil, __gc=function()_G=_G;end})
 	while IsKeyPressed==nil or IsControlPressed==nil or (GetHashKey==nil or _G.GetHashKey==nil) or (HasModelLoaded==nil or _G.HasModelLoaded==nil) or (GetEntityCoords==nil or _G.GetEntityCoords==nil) do
 		_init()
 	end
