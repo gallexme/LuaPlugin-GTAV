@@ -66,29 +66,52 @@ Scripts_Stop = {
 }
 _G.Scripts_Init, _G.Scripts_Stop = Scripts_Init.Function, Scripts_Stop.Function
 
+
+
 local os_clock
 	= os.clock
 local GetTime = function()
 	return os_clock()*1000
 end
-local Time
+
+local UpdateInfoTime = 0
+local Info Info = {
+	Time	= 0,
+	Player	= 0,
+}
 if DebugMode then
 	tick = function()
 		if initRan ~= 2 then return end
+		local Time = GetTime()
+		local Info = Info
+		Info.Time = Time
+		if Time >= UpdateInfoTime then
+			Info.Player.Function()
+			Time = GetTime()
+			Info.Time = Time
+			UpdateInfoTime = Time + 250
+		end
 		local Scripts_Loop = Scripts_Loop
-		Time = GetTime()
 		for i=1, #Scripts_Loop do
 			if not Enabled and i>1 then break end
-			Scripts_Loop[i](Time)
+			Scripts_Loop[i](Info)
 		end
 	end
 else
 	tick = function()
 		if Enabled and initRan == 2 then
+			local Time = GetTime()
+			local Info = Info
+			Info.Time = Time
+			if Time >= UpdateInfoTime then
+				Info.Player.Function()
+				Time = GetTime()
+				Info.Time = Time
+				UpdateInfoTime = Time + 250
+			end
 			local Scripts_Loop = Scripts_Loop
-			Time = GetTime()
 			for i=1, #Scripts_Loop do
-				Scripts_Loop[i](Time)
+				Scripts_Loop[i](Info)
 			end
 		end
 	end
@@ -184,6 +207,56 @@ local function _init()
 	end
 	IsKeyPressed=get_key_pressed
 	Wait=wait
+	
+	--[[ Framework Things ]]
+	local PlayerId, PlayerPedId, GetEntityCoords, IsPedInAnyVehicle, GetVehiclePedIsIn, GetPedInVehicleSeat, NetworkGetNetworkIdFromEntity, GetEntityModel, GetDisplayNameFromVehicleModel, IsThisModelABicycle, IsThisModelABike, IsThisModelABoat, IsThisModelACar, IsThisModelAHeli, IsThisModelAJetski, IsThisModelAPlane, IsThisModelAQuadbike, IsThisModelATrain, IsThisModelAnAmphibiousCar, IsThisModelAnAmphibiousQuadbike
+		= PlayerId, PlayerPedId, GetEntityCoords, IsPedInAnyVehicle, GetVehiclePedIsIn, GetPedInVehicleSeat, NetworkGetNetworkIdFromEntity, GetEntityModel, GetDisplayNameFromVehicleModel, IsThisModelABicycle, IsThisModelABike, IsThisModelABoat, IsThisModelACar, IsThisModelAHeli, IsThisModelAJetski, IsThisModelAPlane, IsThisModelAQuadbike, IsThisModelATrain, IsThisModelAnAmphibiousCar, IsThisModelAnAmphibiousQuadbike
+	local Player Player =
+	{
+		Id			=	0,
+		Ped			=	0,
+		Coords		=	0,
+		Vehicle		=	{
+							IsIn	=	0,
+							IsOp	=	0,
+							Id		=	0,
+							NetId	=	0,
+							Model	=	0,
+							Name	=	0,
+							Type	=	setmetatable({},{__index = function() return false end}),
+						},
+		Function	=	function()
+							--Player.Id		= PlayerId() -- GetPlayerIndex()
+							local Ped		= PlayerPedId() Player.Ped = Ped
+							Player.Coords	= GetEntityCoords(Ped, false)
+							local IsIn		= IsPedInAnyVehicle(Ped, false) Player.Vehicle.IsIn = IsIn
+							if IsIn then
+								local Vehicle	= Player.Vehicle
+								local Veh		= GetVehiclePedIsIn(Ped, false)
+								
+								if Veh == Vehicle.Id then return end
+								
+								Vehicle.IsOp	= Ped == GetPedInVehicleSeat(Veh, -1)
+								Vehicle.Id		= Veh
+								Vehicle.NetId	= NetworkGetNetworkIdFromEntity(Veh)
+								local VehModel	= GetEntityModel(Veh) Vehicle.Model = VehModel
+								Vehicle.Name	= GetDisplayNameFromVehicleModel(Veh)
+								
+								local Vehicle_Type = Vehicle.Type
+								Vehicle_Type.Bicycle			= IsThisModelABicycle(VehModel)
+								Vehicle_Type.Bike				= IsThisModelABike(VehModel)
+								Vehicle_Type.Boat				= IsThisModelABoat(VehModel)
+								Vehicle_Type.Car				= IsThisModelACar(VehModel)
+								Vehicle_Type.Heli				= IsThisModelAHeli(VehModel)
+								--Vehicle_Type.Jetski				= IsThisModelAJetski(VehModel)
+								Vehicle_Type.Plane				= IsThisModelAPlane(VehModel)
+								Vehicle_Type.Quadbike			= IsThisModelAQuadbike(VehModel)
+								Vehicle_Type.Train				= IsThisModelATrain(VehModel)
+								--Vehicle_Type.AmphibiousCar		= IsThisModelAnAmphibiousCar(VehModel)
+								--Vehicle_Type.AmphibiousQuadbike	= IsThisModelAnAmphibiousQuadbike(VehModel)
+							end
+						end
+	} Info.Player = Player
 	
 	--[[ Fix Scripts_Path string variable if missing the trailing "//" on the end ]]
 	if not string_endsWith(Scripts_Path, "//") then
