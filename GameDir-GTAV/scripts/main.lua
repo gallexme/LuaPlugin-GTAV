@@ -89,7 +89,7 @@ if DebugMode then
 			Info.Player.Function()
 			Time = GetTime()
 			Info.Time = Time
-			UpdateInfoTime = Time + 250
+			UpdateInfoTime = Time + 500
 		end
 		local Scripts_Loop = Scripts_Loop
 		for i=1, #Scripts_Loop do
@@ -107,7 +107,7 @@ else
 				Info.Player.Function()
 				Time = GetTime()
 				Info.Time = Time
-				UpdateInfoTime = Time + 250
+				UpdateInfoTime = Time + 500
 			end
 			local Scripts_Loop = Scripts_Loop
 			for i=1, #Scripts_Loop do
