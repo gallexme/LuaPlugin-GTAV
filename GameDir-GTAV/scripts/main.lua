@@ -137,6 +137,7 @@ local function _init()
 	end string.endsWith = string_endsWith
 	
 	--[[ Introduce/Create FiveM style game native function calls ]]
+	local FiveM_GameNativeFunctionCalls = {}
 	local Namespaces	= {
 		PLAYER			= true,
 		ENTITY			= true,
@@ -198,14 +199,19 @@ local function _init()
 					FunctionName = FunctionName..k[i]
 				end
 				
-				while _G[FunctionName]~=v do
-					_G[FunctionName] = v
-				end
+				FiveM_GameNativeFunctionCalls[FunctionName] = v
+				
+				--while _G[FunctionName]~=v do
+				--	_G[FunctionName] = v
+				--end
 			end
 		end
 	end
-	IsKeyPressed=get_key_pressed
-	Wait=wait
+	FiveM_GameNativeFunctionCalls.IsKeyPressed=get_key_pressed
+	FiveM_GameNativeFunctionCalls.Wait=wait
+	setmetatable(_G,{
+		__index = function(table, key) return FiveM_GameNativeFunctionCalls[key] end
+	})
 	
 	--[[ Framework Things ]]
 	local PlayerId, PlayerPedId, GetEntityCoords, IsPedInAnyVehicle, GetVehiclePedIsIn, GetPedInVehicleSeat, NetworkGetNetworkIdFromEntity, GetEntityModel, GetDisplayNameFromVehicleModel, IsThisModelABicycle, IsThisModelABike, IsThisModelABoat, IsThisModelACar, IsThisModelAHeli, IsThisModelAJetski, IsThisModelAPlane, IsThisModelAQuadbike, IsThisModelATrain, IsThisModelAnAmphibiousCar, IsThisModelAnAmphibiousQuadbike
