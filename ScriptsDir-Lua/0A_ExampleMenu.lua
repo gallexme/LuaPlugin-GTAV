@@ -1,5 +1,5 @@
-local Example Example = {
 --[[
+local Example Example = {
 	init			=	function()
 							Example.Keys		= require("Keys")
 							Example.Menu		= require("GUI")
@@ -13,7 +13,7 @@ local Example Example = {
 							Example.Menu.addButton("Hello World3", Example.SaySomethingA, {}, 0.0, 0.2, 0.05, 0.05)
 							Example.Menu.addButton("Hello World4", Example.SaySomethingA, {"Hi", "World", "!"}, 0.0, 0.2, 0.05, 0.05)
 						end,
-	loop			=	function(Init)
+	loop			=	function(Info)
 							if IsKeyPressed(Example.Keys.Z) or IsKeyPressed(90) or IsControlPressed(0, 20) then
 								Example.Menu.Open = not Example.Menu.Open
 							end
@@ -41,6 +41,6 @@ local Example Example = {
 								print("Hello World!1")
 							end
 						end,
-]]
 }
 return Example
+]]

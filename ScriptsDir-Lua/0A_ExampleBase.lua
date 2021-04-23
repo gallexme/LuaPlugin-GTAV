@@ -1,3 +1,4 @@
+--[[
 return {
 	init	=	nil or function()
 					--Stuff that runs only once, on startup of the script
@@ -9,3 +10,4 @@ return {
 					--Stuff that runs only once, on shutdown of the script
 				end,
 }
+]]
