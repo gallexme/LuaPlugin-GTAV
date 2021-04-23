@@ -141,7 +141,7 @@ local function _init()
 	local io_open, io_lines, string_gsub
 		= io.open, io.lines, string.gsub
 	function configFileRead(file, sep) -- Read simple config file
-		file = Scripts_Path..file
+		file, sep = Scripts_Path..file, sep or "="
 		local config, configFile = {}, io_open(file)
 		if configFile then
 			for line in io_lines(file) do
@@ -149,7 +149,7 @@ local function _init()
 					line = string_gsub(line, "\n", "")
 					line = string_gsub(line, "\r", "")
 					if line ~= "" then
-						line = string_split(line, sep or "=")
+						line = string_split(line, sep)
 						config[line[1]] = line[2]
 					end
 				end
@@ -161,9 +161,9 @@ local function _init()
 	local io_open, pairs, string_format, tostring
 		= io.open, pairs, string.format, tostring
 	function configFileWrite(file, config, sep) -- Write simple config file
-		local configFile = io_open(Scripts_Path..file, "w")
+		local configFile, sep = io_open(Scripts_Path..file, "w"), sep or "="
 		for k,v in pairs(config) do
-			configFile:write(string_format("%s%s%s\n", k, sep or "=", tostring(v)))
+			configFile:write(string_format("%s%s%s\n", k, sep, tostring(v)))
 		end
 	end
 	
@@ -296,8 +296,6 @@ local function _init()
 	end
 	
 	--[[ Update the search path ]]
-	local string_format
-		= string.format
 	package.path = string_format(".\\?.dll;%s?.dll;%slibs\\?.dll;%slibs\\?\\init.dll;%s", Scripts_Path, Scripts_Path, Scripts_Path, package.path) -- DLL
 	package.path = string_format(".\\?.lua;%s?.lua;%slibs\\?.lua;%slibs\\?\\init.lua;%s", Scripts_Path, Scripts_Path, Scripts_Path, package.path) -- Lua
 	package.path = string_format(".\\?;%s?;%slibs\\?;%slibs\\?\\init;%s", Scripts_Path, Scripts_Path, Scripts_Path, package.path) -- NoExtension
