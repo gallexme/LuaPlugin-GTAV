@@ -7,8 +7,8 @@ Scripts_Path	= "C:\\Path\\To\\ScriptsDir-Lua\\"
 --[[ Script/Code Area ]]
 local Scripts_Init, Scripts_Loop, Scripts_Stop
 local Enabled = false
-local print, pcall, lfs_dir, require, collectgarbage
-	= print, pcall, lfs.dir, require, collectgarbage
+local print, pcall, lfs_dir, require, collectgarbage, setmetatable
+	= print, pcall, lfs.dir, require, collectgarbage, setmetatable
 Scripts_Init = {
 	Function	=	function()
 						if Enabled then
@@ -131,9 +131,37 @@ local function _init()
 	local function string_upperFirst(s) -- Make the first letter of a string uppercase
 		return s:sub(1,1):upper()..s:sub(2)
 	end string.upperFirst = string_upperFirst
+	local function string_startsWith(str, start) -- Check if a string starts with something
+		return str:sub(1, #start) == start
+	end string.startsWith = string_startsWith
 	local function string_endsWith(str, ending) -- Check if a string ends with something
 		return ending == "" or str:sub(-#ending) == ending
 	end string.endsWith = string_endsWith
+	
+	local io_lines, string_gsub
+		= io.lines, string.gsub
+	function configFileRead(file, sep) -- Read simple config file
+		local config = {}
+		for line in io_lines(Scripts_Path..file) do
+			if not (string_startsWith(line, "[") and string_endsWith(line, "]")) then
+				line = string_gsub(line, "\n", "")
+				line = string_gsub(line, "\r", "")
+				if line ~= "" then
+					line = string_split(line, sep or "=")
+					config[line[1]] = line[2]
+				end
+			end
+		end
+		return config
+	end
+	local io_open, pairs, string_format
+		= io.open, pairs, string.format
+	function configFileWrite(file, config, sep) -- Write simple config file
+		local configFile = io_open(Scripts_Path..file, "w")
+		for k,v in pairs(config) do
+			configFile:write(string_format("%s%s%s\n", k, sep or "=", v))
+		end
+	end
 	
 	--[[ Introduce/Create FiveM style game native function calls ]]
 	local FiveM_GameNativeFunctionCalls = {}
@@ -181,8 +209,8 @@ local function _init()
 		UNK2			= true,
 		UNK3			= true,
 	}
-	local pairs, string_lower
-		= pairs, string.lower
+	local string_lower
+		= string.lower
 	for k,v in pairs(_G) do
 		if Namespaces[k] then
 			local FunctionName
@@ -278,4 +306,5 @@ local function _init()
 end
 function init()
 	_init()
+	collectgarbage()
 end
