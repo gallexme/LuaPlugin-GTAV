@@ -138,28 +138,32 @@ local function _init()
 		return ending == "" or str:sub(-#ending) == ending
 	end string.endsWith = string_endsWith
 	
-	local io_lines, string_gsub
-		= io.lines, string.gsub
+	local io_open, io_lines, string_gsub
+		= io.open, io.lines, string.gsub
 	function configFileRead(file, sep) -- Read simple config file
-		local config = {}
-		for line in io_lines(Scripts_Path..file) do
-			if not (string_startsWith(line, "[") and string_endsWith(line, "]")) then
-				line = string_gsub(line, "\n", "")
-				line = string_gsub(line, "\r", "")
-				if line ~= "" then
-					line = string_split(line, sep or "=")
-					config[line[1]] = line[2]
+		file = Scripts_Path..file
+		local config, configFile = {}, io_open(file)
+		if configFile then
+			for line in io_lines(file) do
+				if not (string_startsWith(line, "[") and string_endsWith(line, "]")) then
+					line = string_gsub(line, "\n", "")
+					line = string_gsub(line, "\r", "")
+					if line ~= "" then
+						line = string_split(line, sep or "=")
+						config[line[1]] = line[2]
+					end
 				end
 			end
+			configFile:close()
 		end
 		return config
 	end
-	local io_open, pairs, string_format
-		= io.open, pairs, string.format
+	local io_open, pairs, string_format, tostring
+		= io.open, pairs, string.format, tostring
 	function configFileWrite(file, config, sep) -- Write simple config file
 		local configFile = io_open(Scripts_Path..file, "w")
 		for k,v in pairs(config) do
-			configFile:write(string_format("%s%s%s\n", k, sep or "=", v))
+			configFile:write(string_format("%s%s%s\n", k, sep or "=", tostring(v)))
 		end
 	end
 	
