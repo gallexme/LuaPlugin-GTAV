@@ -6,7 +6,7 @@ Scripts_Path	= "C:\\Path\\To\\ScriptsDir-Lua\\"
 
 --[[ Script/Code Area ]]
 local Scripts_Init, Scripts_Loop, Scripts_Stop
-local initRan, Enabled = false, false
+local Enabled = false
 local print, pcall, lfs_dir, require, collectgarbage
 	= print, pcall, lfs.dir, require, collectgarbage
 Scripts_Init = {
@@ -80,7 +80,6 @@ local Info Info = {
 }
 if DebugMode then
 	tick = function()
-		if initRan ~= 2 then return end
 		local Time = GetTime()
 		local Info = Info
 		Info.Time = Time
@@ -98,7 +97,7 @@ if DebugMode then
 	end
 else
 	tick = function()
-		if Enabled and initRan == 2 then
+		if Enabled then
 			local Time = GetTime()
 			local Info = Info
 			Info.Time = Time
@@ -200,10 +199,6 @@ local function _init()
 				end
 				
 				FiveM_GameNativeFunctionCalls[FunctionName] = v
-				
-				--while _G[FunctionName]~=v do
-				--	_G[FunctionName] = v
-				--end
 			end
 		end
 	end
@@ -238,10 +233,10 @@ local function _init()
 							if IsIn then
 								local Vehicle	= Player.Vehicle
 								local Veh		= GetVehiclePedIsIn(Ped, false)
+								Vehicle.IsOp	= Ped == GetPedInVehicleSeat(Veh, -1)
 								
 								if Veh == Vehicle.Id then return end
 								
-								Vehicle.IsOp	= Ped == GetPedInVehicleSeat(Veh, -1)
 								Vehicle.Id		= Veh
 								Vehicle.NetId	= NetworkGetNetworkIdFromEntity(Veh)
 								local VehModel	= GetEntityModel(Veh) Vehicle.Model = VehModel
@@ -282,12 +277,5 @@ local function _init()
 	Scripts_Init.Function()
 end
 function init()
-	if initRan then return end initRan = 1
-	local wait, _init = wait, _init
-	wait(250)
-	while IsKeyPressed==nil or IsControlPressed==nil or (GetHashKey==nil or _G.GetHashKey==nil) or (HasModelLoaded==nil or _G.HasModelLoaded==nil) or (GetEntityCoords==nil or _G.GetEntityCoords==nil) do
-		_init()
-	end
-	wait(50)
-	initRan = 2
+	_init()
 end
