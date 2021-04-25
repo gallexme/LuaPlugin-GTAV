@@ -31,8 +31,10 @@ Scripts_Init = {
 								end
 							end
 						end))
+						local Successful, Error
 						for i=1, #Scripts_Init do
-							Scripts_Init[i]()
+							Successful, Error = pcall(Scripts_Init[i])
+							if not Successful then print(Error) end
 						end
 						Enabled = true
 					end
