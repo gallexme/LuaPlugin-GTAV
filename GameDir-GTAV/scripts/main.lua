@@ -276,7 +276,7 @@ local function _init()
 								Vehicle.Id		= Veh
 								Vehicle.NetId	= NetworkGetNetworkIdFromEntity(Veh)
 								local VehModel	= GetEntityModel(Veh) Vehicle.Model = VehModel
-								Vehicle.Name	= GetDisplayNameFromVehicleModel(Veh)
+								Vehicle.Name	= GetDisplayNameFromVehicleModel(VehModel)
 								
 								local Vehicle_Type = Vehicle.Type
 								Vehicle_Type.Bicycle			= IsThisModelABicycle(VehModel)
