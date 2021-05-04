@@ -234,6 +234,9 @@ local function _init()
 					FunctionName = FunctionName..k[i]
 				end
 				
+				if string_startsWith(FunctionName, "0x") then
+					FiveM_GameNativeFunctionCalls["_"..FunctionName] = v
+				end
 				FiveM_GameNativeFunctionCalls[FunctionName] = v
 			end
 		end
