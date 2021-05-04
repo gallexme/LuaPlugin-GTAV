@@ -217,11 +217,10 @@ local function _init()
 		UNK2			= true,
 		UNK3			= true,
 	}
-	local string_lower
-		= string.lower
+	local string_lower, table_concat
+		= string.lower, table.concat
 	for k,v in pairs(_G) do
 		if Namespaces[k] then
-			local FunctionName
 			for k,v in pairs(_G[k]) do
 				k = string_split(k, "_")
 				
@@ -229,15 +228,12 @@ local function _init()
 					k[i] = string_upperFirst(string_lower(k[i]))
 				end
 				
-				FunctionName = ""
-				for i=1, #k do
-					FunctionName = FunctionName..k[i]
-				end
+				k = table_concat(k)
 				
-				if string_startsWith(FunctionName, "0x") then
-					FiveM_GameNativeFunctionCalls["_"..FunctionName] = v
+				if string_startsWith(k, "0x") then
+					FiveM_GameNativeFunctionCalls["_"..k] = v
 				end
-				FiveM_GameNativeFunctionCalls[FunctionName] = v
+				FiveM_GameNativeFunctionCalls[k] = v
 			end
 		end
 	end
