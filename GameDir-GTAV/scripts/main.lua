@@ -120,7 +120,7 @@ else
 end
 local function _init()
 	--[[ Introduce/Create a new Secondary Global Environment Variable ]]
-	local _G2 _G2 = { _G2=_G2 }
+	local _G2 = {} _G2._G2=_G2
 	setmetatable(_G,{
 		__index = _G2
 	})
