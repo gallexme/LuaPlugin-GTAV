@@ -240,7 +240,7 @@ local function _init()
 	FiveM_GameNativeFunctionCalls.IsKeyPressed=get_key_pressed
 	FiveM_GameNativeFunctionCalls.Wait=wait
 	setmetatable(_G,{
-		__index = function(table, key) return FiveM_GameNativeFunctionCalls[key] end
+		__index = FiveM_GameNativeFunctionCalls
 	})
 	
 	--[[ Framework Things ]]
