@@ -33,8 +33,7 @@ Scripts_Init = {
 						end))
 						local Successful, Error
 						for i=1, #Scripts_Init do
-							Successful, Error = pcall(Scripts_Init[i])
-							if not Successful then print(Error) end
+							Successful, Error = pcall(Scripts_Init[i]) if not Successful then print(Error) end
 						end
 						Enabled = true
 					end
@@ -82,20 +81,23 @@ local Info Info = {
 }
 if DebugMode then
 	tick = function()
-		local Time = GetTime()
-		local Info = Info
-		Info.Time = Time
-		if Time >= UpdateInfoTime then
-			Info.Player.Function()
-			Time = GetTime()
+		local NoErrors, Error = pcall(function()
+			local Time = GetTime()
+			local Info = Info
 			Info.Time = Time
-			UpdateInfoTime = Time + 500
-		end
-		local Scripts_Loop = Scripts_Loop
-		for i=1, #Scripts_Loop do
-			if not Enabled and i>1 then break end
-			Scripts_Loop[i](Info)
-		end
+			if Time >= UpdateInfoTime then
+				Info.Player.Function()
+				Time = GetTime()
+				Info.Time = Time
+				UpdateInfoTime = Time + 500
+			end
+			local Scripts_Loop = Scripts_Loop
+			for i=1, #Scripts_Loop do
+				if not Enabled and i>1 then break end
+				Scripts_Loop[i](Info)
+			end
+		end)
+		if not NoErrors then print(Error) end
 	end
 else
 	tick = function()
