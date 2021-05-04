@@ -119,8 +119,14 @@ else
 	end
 end
 local function _init()
+	--[[ Introduce/Create a new Secondary Global Environment Variable ]]
+	local _G2 _G2 = { _G2=_G2 }
+	setmetatable(_G,{
+		__index = _G2
+	})
+	
 	--[[ Introduce some new useful functions ]]
-	function unrequire(script) -- Very useful for script resets/reloads/cleanup
+	function _G2.unrequire(script) -- Very useful for script resets/reloads/cleanup
 		package.loaded[script]=nil
 	end
 	
@@ -144,7 +150,7 @@ local function _init()
 	
 	local io_open, io_lines, string_gsub
 		= io.open, io.lines, string.gsub
-	function configFileRead(file, sep) -- Read simple config file
+	function _G2.configFileRead(file, sep) -- Read simple config file
 		file, sep = Scripts_Path..file, sep or "="
 		local config, configFile = {}, io_open(file)
 		if configFile then
@@ -164,7 +170,7 @@ local function _init()
 	end
 	local io_open, pairs, string_format, tostring
 		= io.open, pairs, string.format, tostring
-	function configFileWrite(file, config, sep) -- Write simple config file
+	function _G2.configFileWrite(file, config, sep) -- Write simple config file
 		local configFile, sep = io_open(Scripts_Path..file, "w"), sep or "="
 		for k,v in pairs(config) do
 			configFile:write(string_format("%s%s%s\n", k, sep, tostring(v)))
@@ -172,7 +178,6 @@ local function _init()
 	end
 	
 	--[[ Introduce/Create FiveM style game native function calls ]]
-	local FiveM_GameNativeFunctionCalls = {}
 	local Namespaces	= {
 		PLAYER			= true,
 		ENTITY			= true,
@@ -231,17 +236,14 @@ local function _init()
 				k = table_concat(k)
 				
 				if string_startsWith(k, "0x") then
-					FiveM_GameNativeFunctionCalls["_"..k] = v
+					_G2["_"..k] = v
 				end
-				FiveM_GameNativeFunctionCalls[k] = v
+				_G2[k] = v
 			end
 		end
 	end
-	FiveM_GameNativeFunctionCalls.IsKeyPressed=get_key_pressed
-	FiveM_GameNativeFunctionCalls.Wait=wait
-	setmetatable(_G,{
-		__index = FiveM_GameNativeFunctionCalls
-	})
+	_G2.IsKeyPressed=get_key_pressed
+	_G2.Wait=wait
 	
 	--[[ Framework Things ]]
 	local PlayerId, PlayerPedId, GetEntityCoords, IsPedInAnyVehicle, GetVehiclePedIsIn, GetPedInVehicleSeat, NetworkGetNetworkIdFromEntity, GetEntityModel, GetDisplayNameFromVehicleModel, IsThisModelABicycle, IsThisModelABike, IsThisModelABoat, IsThisModelACar, IsThisModelAHeli, IsThisModelAJetski, IsThisModelAPlane, IsThisModelAQuadbike, IsThisModelATrain, IsThisModelAnAmphibiousCar, IsThisModelAnAmphibiousQuadbike
