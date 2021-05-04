@@ -251,11 +251,13 @@ local function _init()
 	{
 		Id			=	0,
 		Ped			=	0,
+		Handle		=	0,
 		Coords		=	0,
 		Vehicle		=	{
 							IsIn	=	0,
 							IsOp	=	0,
 							Id		=	0,
+							Handle	=	0,
 							NetId	=	0,
 							Model	=	0,
 							Name	=	0,
@@ -263,7 +265,7 @@ local function _init()
 						},
 		Function	=	function()
 							Player.Id		= PlayerId() -- GetPlayerIndex()
-							local Ped		= PlayerPedId() Player.Ped = Ped
+							local Ped		= PlayerPedId() Player.Ped,Player.Handle=Ped,Ped
 							Player.Coords	= GetEntityCoords(Ped, false)
 							local IsIn		= IsPedInAnyVehicle(Ped, false) Player.Vehicle.IsIn = IsIn
 							if IsIn then
@@ -273,7 +275,7 @@ local function _init()
 								
 								if Veh == Vehicle.Id then return end
 								
-								Vehicle.Id		= Veh
+								Vehicle.Id,Vehicle.Handle=Veh,Veh
 								Vehicle.NetId	= NetworkGetNetworkIdFromEntity(Veh)
 								local VehModel	= GetEntityModel(Veh) Vehicle.Model = VehModel
 								Vehicle.Name	= GetDisplayNameFromVehicleModel(VehModel)
