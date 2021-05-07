@@ -57,8 +57,9 @@ Scripts_Stop = {
 						for i=1, #Scripts_Loop do
 							Scripts_Loop[i]=nil
 						end
+						local Successful, Error
 						for i=1, #Scripts_Stop do
-							Scripts_Stop[i]() Scripts_Stop[i]=nil
+							Successful, Error = pcall(Scripts_Stop[i]) if not Successful then print(Error) end Scripts_Stop[i]=nil
 						end
 						
 						collectgarbage()
