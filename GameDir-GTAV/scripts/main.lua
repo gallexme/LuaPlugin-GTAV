@@ -1,6 +1,6 @@
 --[[ Config Area ]]
 DebugMode		= false
-Scripts_Path	= "C:\\Path\\To\\ScriptsDir-Lua\\"
+Scripts_Path	= "scripts\\ScriptsDir-Lua\\" or "C:\\Path\\To\\ScriptsDir-Lua\\"
 
 
 
