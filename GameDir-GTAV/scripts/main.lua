@@ -14,12 +14,13 @@ Scripts_Init = {
 						if Enabled then
 							Scripts_Stop.Function()
 						end
-						print("All Lua Scripts Loaded Without Error:", pcall(function()
-							local string_endsWith, require, string_gsub, type
-								= string.endsWith, require, string.gsub, type
-							for script in lfs_dir(Scripts_Path) do
-								if string_endsWith(script, ".lua") then
-									script = require(string_gsub(script, ".lua", ""))
+						local string_endsWith, pcall, require, string_gsub, type
+							= string.endsWith, pcall, require, string.gsub, type
+						local Successful
+						for script in lfs_dir(Scripts_Path) do
+							if string_endsWith(script, ".lua") then
+								Successful, script = pcall(require, string_gsub(script, ".lua", ""))
+								if Successful then
 									if type(script)=="table" then
 										Scripts_Stop[#Scripts_Stop+1]=script.stop
 										Scripts_Init[#Scripts_Init+1]=script.init
@@ -28,9 +29,11 @@ Scripts_Init = {
 										Scripts_Stop[#Scripts_Stop+1]=script.unload
 										Scripts_Loop[#Scripts_Loop+1]=script.tick
 									end
+								else
+									print(script)
 								end
 							end
-						end))
+						end
 						local Successful, Error
 						for i=1, #Scripts_Init do
 							Successful, Error = pcall(Scripts_Init[i]) if not Successful then print(Error) end
