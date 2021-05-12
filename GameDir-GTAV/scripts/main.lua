@@ -119,16 +119,14 @@ else
 end
 local function _init()
 	--[[ Introduce/Create a new Secondary Global Environment Variable ]]
-	local _G2 = {} _G2._G2=_G2
-	setmetatable(_G,{
-		__index = _G2
-	})
+	local _G2 = {} _G2._G2=_G2 setmetatable(_G,{__index=_G2})
 	
 	--[[ Introduce some new useful functions ]]
 	function _G2.unrequire(script) -- Very useful for script resets/reloads/cleanup
 		package.loaded[script]=nil
 	end
 	
+	local string=string
 	local string_gmatch
 		= string.gmatch
 	local function string_split(inputstr,sep) -- Split strings into chunks or arguments (in tables)
@@ -155,8 +153,7 @@ local function _init()
 		if configFile then
 			for line in io_lines(file) do
 				if not (string_startsWith(line, "[") and string_endsWith(line, "]")) then
-					line = string_gsub(line, "\n", "")
-					line = string_gsub(line, "\r", "")
+					line = string_gsub(line, "\n", "") line = string_gsub(line, "\r", "")
 					if line ~= "" then
 						line = string_split(line, sep)
 						config[line[1]] = line[2]
@@ -262,7 +259,7 @@ local function _init()
 							NetId	=	0,
 							Model	=	0,
 							Name	=	0,
-							Type	=	setmetatable({},{__index = function() return false end}),
+							Type	=	setmetatable({},{__index=function() return false end}),
 						},
 		Function	=	function()
 							Player.Id		= PlayerId() -- GetPlayerIndex()
