@@ -79,10 +79,7 @@ local GetTime = function()
 end
 
 local UpdateInfoTime = 0
-local Info Info = {
-	Time	= 0,
-	Player	= 0,
-}
+local Info = { Time=0, Player=0 }
 if DebugMode then
 	tick = function()
 		local Time = GetTime()
