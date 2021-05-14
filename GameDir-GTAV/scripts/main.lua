@@ -119,7 +119,7 @@ else
 end
 local function _init()
 	--[[ Introduce/Create a new Secondary Global Environment Variable including version info ]]
-	local _G2 = {JM36_GTAV_LuaPlugin_Version=5.0} _G2._G2=_G2 setmetatable(_G,{__index=_G2})
+	local _G2 = {JM36_GTAV_LuaPlugin_Version=5.1} _G2._G2=_G2 setmetatable(_G,{__index=_G2})
 	
 	--[[ Introduce some new useful functions ]]
 	function _G2.unrequire(script) -- Very useful for script resets/reloads/cleanup
