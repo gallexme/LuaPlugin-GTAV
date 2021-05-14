@@ -223,18 +223,15 @@ local function _init()
 	for k,v in pairs(_G) do
 		if Namespaces[k] then
 			for k,v in pairs(_G[k]) do
-				k = string_split(k, "_")
-				
-				for i=1, #k do
-					k[i] = string_upperFirst(string_lower(k[i]))
+				if string_startsWith(k, "_0x") then
+					_G2[k] = v
+				else
+					k = string_split(k, "_")
+					for i=1, #k do
+						k[i] = string_upperFirst(string_lower(k[i]))
+					end
+					_G2[table_concat(k)] = v
 				end
-				
-				k = table_concat(k)
-				
-				if string_startsWith(k, "0x") then
-					_G2["_"..k] = v
-				end
-				_G2[k] = v
 			end
 		end
 	end
