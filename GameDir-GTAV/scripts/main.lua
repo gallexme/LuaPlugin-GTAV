@@ -118,6 +118,7 @@ else
 	end
 end
 local function _init()
+	local setmetatable = setmetatable
 	--[[ Introduce/Create a new Secondary Global Environment Variable including version info ]]
 	local _G2 = {JM36_GTAV_LuaPlugin_Version=5.1} _G2._G2=_G2 setmetatable(_G,{__index=_G2})
 	
@@ -301,8 +302,10 @@ local function _init()
 	package.path = string_format(".\\?.lua;%s?.lua;%slibs\\?.lua;%slibs\\?\\init.lua;%s", Scripts_Path, Scripts_Path, Scripts_Path, package.path) -- Lua
 	package.path = string_format(".\\?;%s?;%slibs\\?;%slibs\\?\\init;%s", Scripts_Path, Scripts_Path, Scripts_Path, package.path) -- NoExtension
 	
-	--[[ Compatability with original LuaPlugin GUI.lua script ]]
+	--[[ Compatability with existing LuaPlugin scripts ]]
+	local require = require
 	Keys = require("Keys")
+	Libs = setmetatable({},{__index=function(tbl,key)return require(key)end})
 	
 	--[[ Perform scripts initialization ]]
 	Scripts_Init.Function()
