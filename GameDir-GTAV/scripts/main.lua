@@ -7,36 +7,45 @@ Scripts_Path	= "scripts\\ScriptsDir-Lua\\" or "C:\\Path\\To\\ScriptsDir-Lua\\"
 --[[ Script/Code Area ]]
 local Scripts_Init, Scripts_Loop, Scripts_Stop
 local Enabled = false
-local print, pcall, lfs_dir, require, collectgarbage, setmetatable
-	= print, pcall, lfs.dir, require, collectgarbage, setmetatable
+local print, pcall, lfs_dir, table_sort, require, collectgarbage, setmetatable
+	= print, pcall, lfs.dir, table.sort, require, collectgarbage, setmetatable
 Scripts_Init = {
 	Function	=	function()
 						if Enabled then
 							Scripts_Stop.Function()
 						end
-						local string_endsWith, pcall, require, string_gsub, type
-							= string.endsWith, pcall, require, string.gsub, type
-						local Successful
+						
+						local string_endsWith, string_gsub
+							= string.endsWith, string.gsub
+						local Scripts_List, Scripts_NMBR = {}, 0
 						for script in lfs_dir(Scripts_Path) do
 							if string_endsWith(script, ".lua") then
-								Successful, script = pcall(require, string_gsub(script, ".lua", ""))
-								if Successful then
-									if type(script)=="table" then
-										Scripts_Stop[#Scripts_Stop+1]=script.stop
-										Scripts_Init[#Scripts_Init+1]=script.init
-										Scripts_Loop[#Scripts_Loop+1]=script.loop
-										--Support older/existing LuaPlugin format scripts
-										Scripts_Stop[#Scripts_Stop+1]=script.unload
-										Scripts_Loop[#Scripts_Loop+1]=script.tick
-									end
-								else
-									print(script)
-								end
+								Scripts_NMBR = Scripts_NMBR+1
+								Scripts_List[Scripts_NMBR] = string_gsub(script, ".lua", "")
 							end
 						end
-						local Successful, Error
+						table_sort(Scripts_List)
+						
+						local pcall, require, type
+							= pcall, require, type
+						local Successful, script
+						for i=1, Scripts_NMBR do
+							Successful, script = pcall(require, Scripts_List[i])
+							if Successful then
+								if type(script)=="table" then
+									Scripts_Stop[#Scripts_Stop+1]=script.stop
+									Scripts_Init[#Scripts_Init+1]=script.init
+									Scripts_Loop[#Scripts_Loop+1]=script.loop
+									--Support older/existing LuaPlugin format scripts
+									Scripts_Stop[#Scripts_Stop+1]=script.unload
+									Scripts_Loop[#Scripts_Loop+1]=script.tick
+								end
+							else
+								print(script)
+							end
+						end
 						for i=1, #Scripts_Init do
-							Successful, Error = pcall(Scripts_Init[i]) if not Successful then print(Error) end
+							Successful, script = pcall(Scripts_Init[i]) if not Successful then print(script) end
 						end
 						Enabled = true
 					end
