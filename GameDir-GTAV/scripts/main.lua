@@ -313,4 +313,5 @@ end
 function init()
 	_init()
 	collectgarbage()
+	Scripts_Init.Function()
 end
