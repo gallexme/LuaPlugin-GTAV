@@ -309,7 +309,7 @@ local function _init()
 	if not DisableMigrator then
 		local io_popen, string_find, os_execute = io.popen, string.find, os.execute
 		local ExecTail = " > nul 2> nul"
-		print("Migration commencing.")
+		--print("Migration commencing.")
 		local Scripts_Dir = io_popen("dir scripts /w")
 		local _Scripts_Dir = Scripts_Dir:read("*a")
 		Scripts_Dir:close()
@@ -334,7 +334,7 @@ local function _init()
 			os_execute("del scripts\\utils.lua"..ExecTail)
 			print('Removed (legacy) "scripts\\utils.lua"')
 		end
-		print("Migration concluded.")
+		--print("Migration concluded.")
 	end
 	
 	--[[ Perform scripts initialization ]]
