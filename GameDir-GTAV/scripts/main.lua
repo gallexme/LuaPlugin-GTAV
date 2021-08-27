@@ -313,14 +313,14 @@ local function _init()
 		local Scripts_Dir = io_popen("dir scripts /w")
 		local _Scripts_Dir = Scripts_Dir:read("*a")
 		Scripts_Dir:close()
-		if string_find(_Scripts_Dir, "[addins]") then
+		if string_find(_Scripts_Dir, "addins") then
 			os_execute("del scripts\\addins\\basemodule.lua"..ExecTail)
 			os_execute("del scripts\\addins\\exampleGUI.lua"..ExecTail)
 			os_execute("robocopy scripts\\addins "..Scripts_Path.." /mt /move"..ExecTail)
 			os_execute("rd scripts\\addins /s /q"..ExecTail)
 			print('Migrated "scripts\\addins" to "'..Scripts_Path..'".')
 		end
-		if string_find(_Scripts_Dir, "[libs]") then
+		if string_find(_Scripts_Dir, "libs") then
 			os_execute("del scripts\\libs\\GUI.lua"..ExecTail)
 			os_execute("robocopy scripts\\libs "..Scripts_Path.."\\libs /mt /move"..ExecTail)
 			os_execute("rd scripts\\libs /s /q"..ExecTail)
