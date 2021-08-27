@@ -307,7 +307,7 @@ local function _init()
 	Keys = require("Keys")
 	Libs = setmetatable({},{__index=function(tbl,key)return require(key)end})
 	if not DisableMigrator then
-		local print, io_popen, string_find, os_execute = print, io.popen, string.find, os.execute
+		local io_popen, string_find, os_execute = io.popen, string.find, os.execute
 		local ExecTail = " > nul 2> nul"
 		print("Migration commencing.")
 		local Scripts_Dir = io_popen("dir scripts /w")
@@ -341,7 +341,9 @@ local function _init()
 	Scripts_Init.Function()
 end
 function init()
+	local print, error, DummyFunction = print, error, function()end _G.print, _G.error = DummyFunction, DummyFunction
 	_init()
+	_G.print, _G.error, DummyFunction = print, error, nil
 	collectgarbage()
 	Scripts_Init.Function()
 end
