@@ -306,6 +306,36 @@ local function _init()
 	local require = require
 	Keys = require("Keys")
 	Libs = setmetatable({},{__index=function(tbl,key)return require(key)end})
+	if not DisableMigrator then
+		local print, io_popen, string_find, os_execute = print, io.popen, string.find, os.execute
+		local ExecTail = " > nul 2> nul"
+		print("Migration commencing.")
+		local Scripts_Dir = io_popen("dir scripts /w")
+		local _Scripts_Dir = Scripts_Dir:read("*a")
+		Scripts_Dir:close()
+		if string_find(_Scripts_Dir, "[addins]") then
+			os_execute("del scripts\\addins\\basemodule.lua"..ExecTail)
+			os_execute("del scripts\\addins\\exampleGUI.lua"..ExecTail)
+			os_execute("robocopy scripts\\addins "..Scripts_Path.." /mt /move"..ExecTail)
+			os_execute("rd scripts\\addins /s /q"..ExecTail)
+			print('Migrated "scripts\\addins" to "'..Scripts_Path..'".')
+		end
+		if string_find(_Scripts_Dir, "[libs]") then
+			os_execute("del scripts\\libs\\GUI.lua"..ExecTail)
+			os_execute("robocopy scripts\\libs "..Scripts_Path.."\\libs /mt /move"..ExecTail)
+			os_execute("rd scripts\\libs /s /q"..ExecTail)
+			print('Migrated "scripts\\libs" to "'..Scripts_Path..'\\libs".')
+		end
+		if string_find(_Scripts_Dir, "keys.lua") then
+			os_execute("del scripts\\keys.lua"..ExecTail)
+			print('Removed (legacy) "scripts\\keys.lua"')
+		end
+		if string_find(_Scripts_Dir, "utils.lua") then
+			os_execute("del scripts\\utils.lua"..ExecTail)
+			print('Removed (legacy) "scripts\\utils.lua"')
+		end
+		print("Migration concluded.")
+	end
 	
 	--[[ Perform scripts initialization ]]
 	Scripts_Init.Function()
