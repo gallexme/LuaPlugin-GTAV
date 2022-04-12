@@ -1,4 +1,5 @@
 if DebugMode then
+	local wait, Scripts_Init, print, IsControlPressed, get_key_pressed
 	return {
 		loop	=	function()
 						--[[If Tab Key Pressed and not Alt Key Pressed then]]
