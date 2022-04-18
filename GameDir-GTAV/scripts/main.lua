@@ -40,6 +40,9 @@ do
 										Self[#Self+1] = Script.init
 										Scripts_Loop[#Scripts_Loop+1]=Script.loop
 										Scripts_Stop[#Scripts_Stop+1]=Script.stop
+										--Support older/existing LuaPlugin format scripts
+										Scripts_Stop[#Scripts_Stop+1]=script.unload
+										Scripts_Loop[#Scripts_Loop+1]=script.tick
 									end
 								else
 									print(Script)
